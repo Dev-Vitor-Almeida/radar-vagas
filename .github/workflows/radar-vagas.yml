@@ -1,0 +1,28 @@
+name: Radar de Vagas
+
+on:
+  schedule:
+    - cron: "0 0,4,8,12,16,20 * * *"
+
+  workflow_dispatch:
+
+jobs:
+  buscar-vagas:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Baixar projeto
+        uses: actions/checkout@v4
+
+      - name: Configurar Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.14"
+
+      - name: Instalar dependências
+        run: |
+          python -m pip install --upgrade pip
+          pip install requests python-dotenv
+
+      - name: Executar Radar de Vagas
+        run: python main.py
