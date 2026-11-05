@@ -26,4 +26,7 @@ jobs:
           pip install requests python-dotenv
 
       - name: Executar Radar de Vagas
+        env:
+          GOOGLE_SHEETS_URL: ${{ secrets.GOOGLE_SHEETS_URL }}
+          GOOGLE_SHEETS_TOKEN: ${{ secrets.GOOGLE_SHEETS_TOKEN }}
         run: python main.py
