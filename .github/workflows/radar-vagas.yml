@@ -1,8 +1,9 @@
+
 name: Radar de Vagas
 
 on:
   schedule:
-    - cron: "0 0,4,8,12,16,20 * * *"
+    - cron: "0 */2 * * *"
 
   workflow_dispatch:
 

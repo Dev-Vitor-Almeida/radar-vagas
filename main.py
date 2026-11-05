@@ -1,4 +1,3 @@
-
 from sources.github import buscar_vagas_github
 from sources.gupy import buscar_vagas_gupy
 from sources.empregandobrasil import buscar_vagas_empregando_brasil
@@ -7,7 +6,8 @@ from services.duplicate import filtrar_duplicadas, registrar_vagas
 from services.telegram import enviar_mensagem
 
 
-# True: apenas testa | False: envia as notificações
+# True: salva na planilha sem enviar notificações
+# False: envia notificações e registra os envios confirmados
 MODO_TESTE = True
 
 
@@ -35,13 +35,16 @@ def main():
     vagas_filtradas = filtrar_vagas(vagas)
     print(f"\nVagas aprovadas pelo filtro: {len(vagas_filtradas)}")
 
-    # Remove vagas que já foram enviadas anteriormente
+    print("\nConsultando histórico no Google Planilhas...")
     vagas_novas = filtrar_duplicadas(vagas_filtradas)
+
+    duplicadas_ignoradas = len(vagas_filtradas) - len(vagas_novas)
+
     print(f"Vagas novas, sem duplicadas: {len(vagas_novas)}")
 
     if MODO_TESTE:
         print("\n========================================")
-        print("MODO DE TESTE - NENHUMA MENSAGEM ENVIADA")
+        print("MODO DE TESTE - TELEGRAM DESATIVADO")
         print("========================================\n")
 
         for vaga in vagas_novas:
@@ -55,10 +58,15 @@ def main():
             print(f"Link: {vaga['link']}")
             print("-" * 60)
 
-        print("\nRESUMO")
+        resultado = registrar_vagas(vagas_novas)
+
+        print("\n========================================")
+        print("RESULTADO DO TESTE")
+        print("========================================")
         print(f"Total aprovado: {len(vagas_filtradas)}")
         print(f"Vagas novas: {len(vagas_novas)}")
-        print("Histórico preservado.")
+        print(f"Vagas salvas na planilha: {resultado['salvas']}")
+        print(f"Duplicadas ignoradas: {duplicadas_ignoradas}")
         print("Telegram não foi acionado.")
 
         return
@@ -86,14 +94,14 @@ def main():
         else:
             print(f"Falha no envio: {vaga['titulo']}")
 
-    # Registra apenas as notificações confirmadas pelo Telegram
-    registrar_vagas(vagas_enviadas)
+    resultado = registrar_vagas(vagas_enviadas)
 
     print("\n========================================")
     print("RESUMO DO ENVIO")
     print("========================================")
     print(f"Vagas novas: {len(vagas_novas)}")
     print(f"Notificações enviadas: {len(vagas_enviadas)}")
+    print(f"Vagas registradas na planilha: {resultado['salvas']}")
     print(f"Falhas no envio: {len(vagas_novas) - len(vagas_enviadas)}")
     print("\nBusca finalizada!")
 
