@@ -8,7 +8,7 @@ from services.telegram import enviar_mensagem
 
 # True: salva na planilha sem enviar notificações
 # False: envia notificações e registra os envios confirmados
-MODO_TESTE = True
+MODO_TESTE = False
 
 
 def main():
