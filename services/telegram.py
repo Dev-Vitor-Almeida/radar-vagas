@@ -44,7 +44,7 @@ def enviar_mensagem(mensagem):
 
 
 # Teste da integração com o Telegram
-if __name__ == "__main__":
+#if __name__ == "__main__":
     sucesso = enviar_mensagem(
         "🚀 Teste do Radar de Vagas!\n\n"
         "Integração com o Telegram funcionando."
